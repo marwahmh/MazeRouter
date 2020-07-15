@@ -1,5 +1,4 @@
 def MazeRouter(inFile):
-
     #reading input file
     infile=open(inFile)
     content=infile.read()
