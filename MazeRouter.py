@@ -1,6 +1,21 @@
 import numpy as np
 import re
 
+class Cell:
+    def __init__(self,L,X,Y,taken=0):
+        self.taken = taken # 0 or 1
+        self.point=(X,Y,L)
+        self.H = 0
+        self.G = 0
+        self.F = 0
+        self.parent=None
+        self.children=[]
+        
+    def setF(self):
+        self.F= self.H + self.G
+        #return (self.f)
+   # def move_cost(self,other):
+    #    return 0 if self.value == '.' else 1
 
 
 
@@ -36,33 +51,39 @@ def MazeRouter(inFile):
 
     #constants
     layers = int(input('Please enter the number of layers'))
-    width=1000
-    height=1000
+    width=100
+    height=100
     viaCost= 10
-    grid = np.empty([width, height,layers]) #array representing the grid
-    print(grid)
-
-
-    for i in range(len(nets)):
-        print('Path for net'+ str(i+1))
-        for j in range(len(nets[i])-1):
-            findPath(nets[i][j][0],nets[i][j][1],nets[i][j][2],nets[i][j+1][0],nets[i][j+1][1],nets[i][j+1][2],grid) #every target becomes a source 
-            print(nets[i][j], nets[i][j+1])
-        
-
-        
-        
-        
-
+    grid = [[[0 for k in range(layers)] for j in range(height)] for i in range(width)]
+#array representing the grid
     
-       
-    
+    #covert array entries to cells
+    for i in range(width):
+        for j in range(height):
+            for k in range(layers):
+                grid[i][j][k]= Cell(k,i,j,0)
+                #grid[i][j][k]= 0
+    #grid[9][9][1]=1
 
-def HeuristicF(sourceLayer,sourceX, sourceY, targetLayer, targetX, targetY): #the heuristic function calculates the manhattan ditance + the cost of vias between the layers (the cost of the path between current and target nodes)
+    #print(grid)
 
-        xDist = abs(targetX-sourceX) #horizontal distance
-        yDist = abs(targetY-sourceY) #vertical distance
-        zDist= targetLayer-sourceLayer #distance between layers
+
+    #make it with priority (check the source with the shortest path)
+    #for i in range(len(nets)):
+     #   print('Path for net'+ str(i+1))
+      #  for j in range(len(nets[i])-1):
+       #     print(findPath(nets[i][j][0],nets[i][j][1],nets[i][j][2],nets[i][j+1][0],nets[i][j+1][1],nets[i][j+1][2],grid)) #every target becomes a source 
+        #    #print(nets[i][j], nets[i][j+1])
+    #print(nets[0][0])
+    findPath(nets[0][0][0]-1,nets[0][0][1],nets[0][0][2],nets[0][1][0]-1,nets[0][1][1],nets[0][1][2],grid) #every target becomes a source 
+   
+
+
+def HeuristicF(sourcePoint, targetPoint): #the heuristic function calculates the manhattan ditance + the cost of vias between the layers (the cost of the path between current and target nodes)
+
+        xDist = abs(targetPoint[0]-sourcePoint[0]) #horizontal distance
+        yDist = abs(targetPoint[1]-sourcePoint[1]) #vertical distance
+        zDist = abs(targetPoint[2]-sourcePoint[2]) #distance between layers
 
         return xDist+yDist+zDist
 
@@ -74,51 +95,85 @@ def findPath(L1,x1,y1,L2,x2,y2,grid): #will check the path with the least f , th
     opened=[] #includes the possible next nodes
     path=[]
 
-    startCell = (L1,x1,y1)
-    targetCell = (L2,x2,y2)
+    startCell = grid[x1][y1][L1]
+    targetCell = grid[x2][y2][L2]
     currentCell = startCell
     opened.append(currentCell)
 
-    while opened: #loop on possible next nodes
+    #while opened: #loop on possible next nodes
+    while currentCell.point != targetCell.point:
+        #currentCell= getminF(opened,startCell,targetCell)
+        x_1 =currentCell.point[0]
+        y_1 =currentCell.point[1]
+        L_1 =currentCell.point[2]
 
-        currentCell= getminF(opened,startCell,targetCell)
+
+
+
+        #path.append(currentCell.point)
+        print (currentCell.point)
+
+        if currentCell.point == targetCell.point:
+            #return path
+            break
+        #closed.append(currentCell)
+        #opened.remove(currentCell)
+
+        if int(L_1)%2 !=0: #odd layers M1,M3,M5... Horizontal
+
+            #right,left,up,down
+            if grid[x_1+1][y_1][L_1].taken == 0:
+                currentCell.children.append(grid[x_1+1][y_1][L_1])
+            if grid[x_1-1][y_1][L_1].taken == 0:
+                currentCell.children.append(grid[x_1-1][y_1][L_1])
+            if grid[x_1][y_1][L_1+1].taken == 0:
+                currentCell.children.append(grid[x_1][y_1][L_1+1])
+            if grid[x_1][y_1][L_1-1].taken == 0:
+                currentCell.children.append(grid[x_1][y_1][L_1-1])
+
         
-        if currentCell == targetCell:
-            return path
-        closed.append(currentCell)
-        opened.remove(currentCell)
+        else: #even layers M2,M4... Vertical
 
-        if int(L1)%2 !=0 #odd layers M1,M3,M5... Horizontal
-        
-            children=[(L1,x1-1,y1),(L1,x1+1,y1),(L1+1,x1,y1),(L1-1,x1,y1)]
+            #north,south,up,down
+            if grid[x_1][y_1+1][L_1].taken == 0:
+                currentCell.children.append(grid[x_1+1][y_1][L_1])
+            if grid[x_1][y_1-1][L_1].taken == 0:
+                currentCell.children.append(grid[x_1-1][y_1][L_1])
+            if grid[x_1][y_1][L_1+1].taken == 0:
+                currentCell.children.append(grid[x_1][y_1][L_1+1])
+            if grid[x_1][y_1][L_1-1].taken == 0:
+                currentCell.children.append(grid[x_1][y_1][L_1-1])
 
-            for cell in children:
-                if 
+        Fmin=2000
+        if len(currentCell.children) !=0:
+            for cell in currentCell.children:
+                #find h
+                cell.H = HeuristicF(cell.point,targetCell.point)
+                
+                #find g
+                if cell.point[2] == currentCell.point[2]:
+                    cell.G +=1 #cost of a step in the same layer
+                else:
+                    cell.G += 10 #cost of a via
+                        
+                #update F
+                cell.setF() 
 
-        else #even layers M2,M4... Vertical
-            children=[(L1,x1,y1-1),(L1,x1+1,y1+1),(L1+1,x1,y1),(L1-1,x1,y1)]
+                cell.parent= currentCell
 
-        
+                if cell.F < Fmin:
+                    Fmin = cell.F
+                    currentCell = cell
+                
+                x_1 =currentCell.point[0]
+                y_1 =currentCell.point[1]
+                L_1 =currentCell.point[2]
+
+                grid[x_1][y_1][L_1]=currentCell
         
             
-def getminF (opened,startCell,targetCell): #########
-    min=2000
-    for cell in opened: #loop on each node and find the one with the least f ( heuristic function )
- 
-        H = HeuristicF(cell[0],cell[1],cell[2],targetCell[0],targetCell[1],targetCell[2])
-        G=
-        F=H+G
-
-        if F < min:
-            min = F
-            chosenCell = cell
-
-
-        
-    
-    
-    
-
+               
+                
 
 
     
