@@ -17,6 +17,64 @@ class Cell:
    # def move_cost(self,other):
     #    return 0 if self.value == '.' else 1
 
+class PIN:
+    def __init__(self, name, direction, fixed, layer):
+        self.name = name
+        self.direction = direction
+        self.fixed = fixed
+        self.layer = layer
+
+
+class NET:
+    def __init__(self, name, connections):
+        self.name = name
+        self.connections = connections
+
+def Bonus():
+    listPINS = []
+    listNETS = []
+
+    deff = open("input.def", "rt")
+    contents = deff.readlines()
+    deff.close()
+
+    # reading the file line by line
+    for line in contents:
+        if line.find("PINS") != -1 and line.find("END PINS") == -1:  # reading PINS block
+            pinCount = int(line[5])
+            # print(pinCount)
+            for x in range(1, pinCount * 4, 4):  # read each PIN's attribute
+                tempPinName = contents[contents.index(line) + x].rstrip("\n")
+                tempPinName = tempPinName[tempPinName.find("NET") + 4:]
+                # print(tempPinName)
+                tempPinDirection = contents[contents.index(line) + x + 1].rstrip("\n")
+                tempPinDirection = tempPinDirection[tempPinDirection.find("DIRECTION") + 10:]
+                # print(tempPinDirection)
+                tempPinFixed = contents[contents.index(line) + x + 2].rstrip("\n")
+                tempPinFixed = tempPinFixed[tempPinFixed.find("FIXED") + 6:]
+                # print(tempPinFixed)
+                tempPinLayer = contents[contents.index(line) + x + 3].rstrip("\n")
+                tempPinLayer = tempPinLayer[tempPinLayer.find("LAYER") + 6:]
+                # print(tempPinLayer)
+
+                # append each temp variable to the list of PINS
+                listPINS.append(PIN(tempPinName, tempPinDirection, tempPinFixed, tempPinLayer))
+
+        elif line.find("NETS") != -1 and line.find("END NETS") == -1:  # reading NETS block
+            netCount = int(line[5])
+            # print(netCount)
+            for x in range(1, netCount):  # read each NET's attribute
+                tempNetName = contents[contents.index(line) + x].rstrip("\n")
+                tempNetName = tempNetName.split()[0]
+                tempNetName = tempNetName[1:]
+                # print(tempNetName)
+                tempNetConnections = contents[contents.index(line) + x].rstrip("\n")
+                tempNetConnections = tempNetConnections[tempNetConnections.find("("):-1]
+                # print(tempNetConnections)
+
+                # append each temp variable to the list of NETS
+                listNETS.append(NET(tempNetName, tempNetConnections))
+
 
 
 
