@@ -70,7 +70,32 @@ for line in contents:
 #     for x in obj.pins:
 #         print(x.name)
 #         print(x.direction)
-#         print(x.layerName)
+#         print(x.layerName[-1])
 #         print(x.x1y1)
 #         print(x.x2y2)
 #         print(" ")
+#
+
+import readDef
+
+output = open("generated_input.txt", "w")
+
+for net in readDef.listNETS:
+    tempNetName = net.name
+    tuple = tempNetName
+    # NET connections in DEF
+    for x in net.connectionsL:
+        # COMPONENTS in DEF
+        for comp in readDef.listCOMPONENTS:
+            if comp.name == x.split()[0]:
+                # COMPONENT models in MACRO in LEF
+                for macro in listMACROS:
+                    if comp.modName == macro.name:
+                        # compare NET PIN with MACRO PIN
+                        for y in macro.pins:
+                            if x.split()[1] == y.name:
+                                tempLayer = y.layerName
+                                tempPinx = float(y.x1y1.split()[0]) + float(comp.placed.split()[0])
+                                tempPiny = float(y.x1y1.split()[1]) + float(comp.placed.split()[1])
+        tuple += " (" + tempLayer[-1] + ", " + str(tempPinx) + ", " + str(tempPiny) + ")"
+    output.write(tuple+"\n")
