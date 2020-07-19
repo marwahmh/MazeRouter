@@ -23,6 +23,8 @@ class Cell:
 
 def generateInput():
     output = open("generated_input.txt", "x")
+    maxLayer = 0
+    maxList = []
     import readDef
     import readLef
 
@@ -30,21 +32,25 @@ def generateInput():
         tempNetName = net.name
         tuple = tempNetName
         # NET connections in DEF
-        for x in net.connectionsL:
+        for con in net.connectionsL:
             # COMPONENTS in DEF
             for comp in readDef.listCOMPONENTS:
-                if comp.name == x.split()[0]:
+                if comp.name == con.split()[0]:
                     # COMPONENT models in MACRO in LEF
                     for macro in readLef.listMACROS:
                         if comp.modName == macro.name:
                             # compare NET PIN with MACRO PIN
-                            for y in macro.pins:
-                                if x.split()[1] == y.name:
-                                    tempLayer = y.layerName
-                                    tempPinx = float(y.x1y1.split()[0]) + float(comp.placed.split()[0])
-                                    tempPiny = float(y.x1y1.split()[1]) + float(comp.placed.split()[1])
+                            for pin in macro.pins:
+                                if con.split()[1] == pin.name:
+                                    tempLayer = pin.layerName
+                                    tempPinx = float(pin.x1y1.split()[0]) + float(comp.placed.split()[0])
+                                    tempPiny = float(pin.x1y1.split()[1]) + float(comp.placed.split()[1])
+                                    if int(tempLayer) > maxLayer:
+                                        maxLayer = int(tempLayer)
             tuple += " (" + tempLayer[-1] + ", " + str(tempPinx) + ", " + str(tempPiny) + ")"
         output.write(tuple)
+        maxList.append(maxLayer)
+    maxList.sort()
 
 
 def MazeRouter(inFile):
