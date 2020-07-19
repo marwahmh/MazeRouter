@@ -48,9 +48,11 @@ def generateInput():
                                     if int(tempLayer) > maxLayer:
                                         maxLayer = int(tempLayer)
             tuple += " (" + tempLayer[-1] + ", " + str(tempPinx) + ", " + str(tempPiny) + ")"
+        # print(tuple)
         output.write(tuple)
         maxList.append(maxLayer)
-    maxList.sort()
+    maxList.sort(reverse=True)
+    # print(maxList)
 
 
 def MazeRouter(inFile):
