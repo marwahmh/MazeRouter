@@ -15,9 +15,9 @@ class TRACKS:  # list
 
 class COMPONENT:  # list
     def __init__(self, name, modName, placed, orientation):
-        self.name = name    # component name
-        self.modName = modName      # model name
-        self.placed = placed        # coordinates
+        self.name = name  # component name
+        self.modName = modName  # model name
+        self.placed = placed  # coordinates
         self.orientation = orientation
 
 
@@ -63,10 +63,10 @@ for line in contents:
     if line.find("TRACKS") != -1:
         tempTrack = line.split()
         tempOrientation = tempTrack[1]  # x|y
-        tempStart = tempTrack[2]        # point on x|y
-        tempNumTracks = tempTrack[4]    # number of tracks
-        tempStep = tempTrack[6]         # step
-        tempTrackLayer = tempTrack[8]   # layer
+        tempStart = tempTrack[2]  # point on x|y
+        tempNumTracks = tempTrack[4]  # number of tracks
+        tempStep = tempTrack[6]  # step
+        tempTrackLayer = tempTrack[8]  # layer
         listTRACKS.append(TRACKS(tempOrientation, tempStart, tempNumTracks, tempStep, tempTrackLayer))
 
     if line.find("COMPONENTS") != -1 and line.find("END COMPONENTS") == -1:
@@ -103,13 +103,14 @@ for line in contents:
             # print(tempPinOrientation)
             tempPinPlaced = tempPinPlaced[3] + " " + tempPinPlaced[4]
             # print(tempPinPlaced)
-            listPINS.append(PIN(tempPinName, tempPinLName, tempPinLSpacing, tempPinLWidth, tempPinPlaced, tempPinOrientation))
+            listPINS.append(
+                PIN(tempPinName, tempPinLName, tempPinLSpacing, tempPinLWidth, tempPinPlaced, tempPinOrientation))
 
     if line.find("NETS") != -1 and line.find("END NETS") == -1 and line.find("SPECIALNETS") == -1:
         netCount = int(line.split()[1])
         # print(netCount)
-        x=1
-        appended =False
+        x = 1
+        appended = False
         tempCList = []
         while True:
             if contents[contents.index(line) + x].strip() == "END NETS":
@@ -140,12 +141,6 @@ for line in contents:
                     # listNETS.append(NET(NET.addConnection(tempConnection)))
                 x += 1
 
-maxLayer = 0
-for obj in listPINS:
-    layerTemp = int(obj.layerName[-1:])
-    if layerTemp > maxLayer:
-        maxLayer = layerTemp
-
 # TESTING
 # print(diearea.llxy)
 # print(diearea.urxy)
@@ -162,7 +157,7 @@ for obj in listPINS:
 #     print(obj.modName)
 #     print(obj.placed)
 #     print(obj.orientation)
-#
+
 # for obj in listPINS:
 #     print(obj.name)
 #     print(obj.layerName)
@@ -170,10 +165,10 @@ for obj in listPINS:
 #     print(obj.layerWidth)
 #     print(obj.placed)
 #     print(obj.orientation)
-#
+
 # for obj in listNETS:
 #     print(obj.name)
 #     print(obj.connectionsL)
 #
-#
+
 # split connections and check highest layer
