@@ -21,7 +21,7 @@ class Cell:
 
 def generateInput():
     output = open("generated_input.txt", "w")
-    maxLayer = 0
+    maxLayer = 1
     maxList = []
     import readDef
     import readLef
@@ -40,17 +40,16 @@ def generateInput():
                             # compare NET PIN with MACRO PIN
                             for pin in macro.pins:
                                 if con.split()[1] == pin.name:
-                                    tempLayer = pin.layerName
-                                    tempPinx = float(pin.x1y1.split()[0]) + float(comp.placed.split()[0])
-                                    tempPiny = float(pin.x1y1.split()[1]) + float(comp.placed.split()[1])
-                                    if int(tempLayer) > maxLayer:
-                                        maxLayer = int(tempLayer)
+                                    tempLayer = pin.layerName[-1]
+                                    tempPinx = float(pin.x1y1.split()[0]) + float(comp.placed.split()[0]) / readDef.UNITS
+                                    tempPiny = float(pin.x1y1.split()[1]) + float(comp.placed.split()[1]) / readDef.UNITS
+                                    if float(tempLayer) > maxLayer:
+                                        maxLayer = float(tempLayer)
             tuple += " (" + tempLayer[-1] + ", " + str(tempPinx) + ", " + str(tempPiny) + ")"
         # print(tuple)
-        output.write(tuple)
+        output.write(tuple+"\n")
         maxList.append(maxLayer)
     maxList.sort(reverse=True)
-    #return(maxList)
     # print(maxList)
 
 
