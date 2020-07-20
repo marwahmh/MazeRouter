@@ -47,11 +47,15 @@ listCOMPONENTS = []
 listPINS = []
 listNETS = []
 
-deff = open("arbiter.def", "rt")
+deff = open("crc32.def", "rt")
 contents = deff.readlines()
 deff.close()
 
 for line in contents:
+    if line.find("UNITS") != -1:
+        UNITS = int(line.split()[-2])
+        # print(UNITS)
+
     if line.find("DIEAREA") != -1:
         tempDieArea = line.split()
         tempLLX = tempDieArea[2] + " " + tempDieArea[3]

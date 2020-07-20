@@ -22,8 +22,8 @@ class Cell:
 
 
 def generateInput():
-    output = open("generated_input.txt", "x")
-    maxLayer = 0
+    output = open("generated_input.txt", "w")
+    maxLayer = 1
     maxList = []
     import readDef
     import readLef
@@ -42,14 +42,14 @@ def generateInput():
                             # compare NET PIN with MACRO PIN
                             for pin in macro.pins:
                                 if con.split()[1] == pin.name:
-                                    tempLayer = pin.layerName
-                                    tempPinx = float(pin.x1y1.split()[0]) + float(comp.placed.split()[0])
-                                    tempPiny = float(pin.x1y1.split()[1]) + float(comp.placed.split()[1])
-                                    if int(tempLayer) > maxLayer:
-                                        maxLayer = int(tempLayer)
+                                    tempLayer = pin.layerName[-1]
+                                    tempPinx = float(pin.x1y1.split()[0]) + float(comp.placed.split()[0]) / readDef.UNITS
+                                    tempPiny = float(pin.x1y1.split()[1]) + float(comp.placed.split()[1]) / readDef.UNITS
+                                    if float(tempLayer) > maxLayer:
+                                        maxLayer = float(tempLayer)
             tuple += " (" + tempLayer[-1] + ", " + str(tempPinx) + ", " + str(tempPiny) + ")"
         # print(tuple)
-        output.write(tuple)
+        output.write(tuple+"\n")
         maxList.append(maxLayer)
     maxList.sort(reverse=True)
     # print(maxList)
@@ -258,5 +258,5 @@ def findPath(L1, x1, y1, L2, x2, y2, grid):
 
     grid[x2][y2][L2].taken = 0
 
-
+generateInput()
 MazeRouter('input file.txt')
