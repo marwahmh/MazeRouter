@@ -21,12 +21,12 @@ class Cell:
 
 def generateInput():
     output = open("generated_input.txt", "w")
-    maxLayer = 1
     maxList = []
     import readDef
     import readLef
 
     for net in readDef.listNETS:
+        maxLayer = 1
         tempNetName = net.name
         tuple = tempNetName
         # NET connections in DEF
@@ -256,5 +256,6 @@ def findPath(L1,x1,y1,L2,x2,y2,grid):
           
     grid[x2][y2][L2].taken=0
 
+generateInput()
 MazeRouter('input file 1.txt','out file 1.txt')
 MazeRouter('input file 2.txt','out file 2.txt')
