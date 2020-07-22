@@ -1,6 +1,8 @@
 # MazeRouter
 
-Develope a maze router (using python) that implements maze routing algorithm (using A* algorithm). The router connects pins that belong to the same net together using the available routing resources. There are infinite routing layers (M_odd: horizontal and M_even: Vertical) routing grid is 1000x1000 cells foreach layer.
+This is an academic project for CSCE3304 Digital Design II at the American University in Cairo
+
+Develop a maze router (using python) that implements maze routing algorithm (using A* algorithm). The router connects pins that belong to the same net together using the available routing resources. There are infinite routing layers (M_odd: horizontal and M_even: Vertical) routing grid is 1000x1000 cells foreach layer.
 
 The input to the router is a text file that lists the nets to be routed genrated from the given DEF and LEF files associated with the project.
 
