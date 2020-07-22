@@ -20,16 +20,16 @@ class Cell:
         self.F= self.H + self.G
 
 def generateInput():
-    ' generates the input file from the DEF and LEF files'
     output = open("generated_input.txt", "w")
-    maxLayer = 0
     maxList = []
+    tuple = ""
     import readDef
     import readLef
 
     for net in readDef.listNETS:
+        maxLayer = 1
         tempNetName = net.name
-        tuple = tempNetName
+        tuple += tempNetName
         # NET connections in DEF
         for con in net.connectionsL:
             # COMPONENTS in DEF
@@ -41,18 +41,23 @@ def generateInput():
                             # compare NET PIN with MACRO PIN
                             for pin in macro.pins:
                                 if con.split()[1] == pin.name:
-                                    tempLayer = pin.layerName
-                                    tempPinx = float(pin.x1y1.split()[0]) + float(comp.placed.split()[0])
-                                    tempPiny = float(pin.x1y1.split()[1]) + float(comp.placed.split()[1])
-                                    if int(tempLayer) > maxLayer:
-                                        maxLayer = int(tempLayer)
+                                    tempLayer = pin.layerName[-1]
+                                    tempPinx = float(pin.x1y1.split()[0]) + float(
+                                        comp.placed.split()[0]) / readDef.UNITS
+                                    tempPiny = float(pin.x1y1.split()[1]) + float(
+                                        comp.placed.split()[1]) / readDef.UNITS
+                                    if float(tempLayer) > maxLayer:
+                                        maxLayer = float(tempLayer)
             tuple += " (" + tempLayer[-1] + ", " + str(tempPinx) + ", " + str(tempPiny) + ")"
         # print(tuple)
-        output.write(tuple)
+        tuple += "\n"
         maxList.append(maxLayer)
-    maxList.sort(reverse=True)
-    #return(maxList)
-    # print(maxList)
+    # here the tuple is arranged so that the highest layer is placed first
+    tupleList = [y for y in (x.strip() for x in tuple.splitlines()) if y]
+    zipped = sorted(zip(maxList, tupleList), reverse=True)
+    sorted_output = [x for y, x in zipped]
+    for line in sorted_output:
+        output.write(line + "\n")
 
 
 def MazeRouter(inFile,outFile):
