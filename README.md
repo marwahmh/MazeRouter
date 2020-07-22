@@ -4,7 +4,7 @@ Develope a maze router (using python) that implements maze routing algorithm (us
 
 The input to the router is a text file that lists the nets to be routed genrated from the given DEF and LEF files associated with the project.
 
-The shortest path will be given for each layer by using g and f, that are used by the A* Algorithm's fuction: f = g + h, where h is the heuristic.
+The shortest path will be given by using g and f, that are used by the A* Algorithm's fuction: f = g + h, where h is the heuristic.
   
 The path is also plotted as a 3D graph at the end.
 
